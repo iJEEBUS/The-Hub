@@ -9,9 +9,7 @@ import java.awt.Toolkit;
 //import java.awt.event.MouseAdapter;
 //import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -135,7 +133,7 @@ public class Hub extends JFrame {
 			int background_width = dim.width;
 			int background_height = dim.height;
 			
-			BufferedImage img = ImageIO.read(ResourceLoader.load(file));
+			BufferedImage img = ImageIO.read(ResourceLoader.load(file_path));
 			Image full_screen_img = img.getScaledInstance(background_width, background_height, Image.SCALE_AREA_AVERAGING);
 			background.setIcon(new ImageIcon(full_screen_img));
 			background.setSize(dim);
@@ -164,7 +162,7 @@ public class Hub extends JFrame {
 			int image_width = dim.width / 4;
 			int image_height = image_width;
 			
-			BufferedImage image = ImageIO.read(ResourceLoader.load(file));
+			BufferedImage image = ImageIO.read(ResourceLoader.load(file_path));
 			Image scaled_image = image.getScaledInstance(image_width, image_height, Image.SCALE_AREA_AVERAGING);
 			lbl.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {
@@ -195,7 +193,7 @@ public class Hub extends JFrame {
 			int image_width = (int) width;
 			int image_height = (int) height;
 			
-			BufferedImage image = ImageIO.read(ResourceLoader.load(file));
+			BufferedImage image = ImageIO.read(ResourceLoader.load(file_path));
 			Image scaled_image = image.getScaledInstance(image_width, image_height, Image.SCALE_AREA_AVERAGING);
 			lbl.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {

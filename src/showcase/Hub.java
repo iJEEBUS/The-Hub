@@ -4,29 +4,20 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+//import java.awt.event.MouseAdapter;
+//import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.OverlayLayout;
+import javax.swing.SwingUtilities;
 
 public class Hub extends JFrame {
 	/*****************************************************************
@@ -35,10 +26,9 @@ public class Hub extends JFrame {
 	private static final long serialVersionUID = 2833726655594634320L;
 
 	/*****************************************************************
-	 * Constructor for the GUI class. Creates and sets visible the 
-	 * custom frame.
+	 * Creates and displays the Tech Showcase Hub
 	 *****************************************************************/
-	public Hub() {
+	public void createAndShowHub() {
 		JFrame frame = customFrame();
 		frame.pack();
 		frame.setVisible(true);
@@ -177,10 +167,10 @@ public class Hub extends JFrame {
 		try {
 			
 			int image_width = dim.width / 4;
-			int image_height = dim.width / 4;
+			int image_height = image_width;
 			
 			BufferedImage image = ImageIO.read(file);
-			Image scaled_image = image.getScaledInstance(image_width, image_width, Image.SCALE_AREA_AVERAGING);
+			Image scaled_image = image.getScaledInstance(image_width, image_height, Image.SCALE_AREA_AVERAGING);
 			lbl.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {
 			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());
@@ -226,6 +216,12 @@ public class Hub extends JFrame {
 	 * @param args
 	 *****************************************************************/
 	public static void main(String[] args) {
-		Hub hub = new Hub();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Hub hub = new Hub();
+				hub.createAndShowHub();
+			}
+		});
 	}
 }

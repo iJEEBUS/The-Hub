@@ -75,11 +75,11 @@ public class Hub extends JFrame {
 		File rental_form_file = new File("./images/Rental_form.png");
 		File time_clock_file = new File("./images/Time_clock.png");
 
-		JButton printing_button = buttonWithImage(printing_records_file);
-		JButton printing_form_button = buttonWithImage(printing_form_file);
-		JButton rental_button = buttonWithImage(rental_records_file);
-		JButton rental_form_button = buttonWithImage(rental_form_file);
-		JButton time_clock_button = buttonWithImage(time_clock_file);
+		JButton printing_button = buttonWithImage(printing_records_file, dim);
+		JButton printing_form_button = buttonWithImage(printing_form_file, dim);
+		JButton rental_button = buttonWithImage(rental_records_file, dim);
+		JButton rental_form_button = buttonWithImage(rental_form_file, dim);
+		JButton time_clock_button = buttonWithImage(time_clock_file, dim);
 
 		// Adding buttons
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -87,7 +87,7 @@ public class Hub extends JFrame {
 		// Add a blank space in the top row
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		background.add(Box.createVerticalStrut((dim.height / 6)), gbc);
+		background.add(Box.createVerticalStrut((dim.height / 12)), gbc);
 		
 		// Printing records
 		gbc.gridx = 0;
@@ -102,11 +102,12 @@ public class Hub extends JFrame {
 		// Add blank spaces between the buttons
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		background.add(Box.createHorizontalStrut((dim.width/2)), gbc);
+		int width = (int) (dim.width / 2.5);
+		background.add(Box.createHorizontalStrut(width), gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		background.add(Box.createVerticalStrut((dim.height / 12)), gbc);
+		background.add(Box.createVerticalStrut((dim.height / 24)), gbc);
 		
 		// Rental button
 		gbc.gridx = 2;
@@ -158,11 +159,11 @@ public class Hub extends JFrame {
 	 * @param file - File - the image to make the button
 	 * @return
 	 *****************************************************************/
-	private JButton buttonWithImage(File file) {
+	private JButton buttonWithImage(File file, Dimension dim) {
 		JButton btn = new JButton();
 		try {
 			BufferedImage image = ImageIO.read(file);
-			Image scaled_image = image.getScaledInstance(350, 350, Image.SCALE_AREA_AVERAGING);
+			Image scaled_image = image.getScaledInstance(dim.width / 5, dim.width / 5, Image.SCALE_AREA_AVERAGING);
 			btn.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {
 			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());

@@ -11,6 +11,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -56,22 +57,15 @@ public class Hub extends JFrame {
 		frame.setMinimumSize(dim);
 
 		// Create backdrop
-		File background_file = new File("./images/Background.png");
-		JLabel background = createBackground(background_file, dim);
+		JLabel background = createBackground("/images/Background.png", dim);
 		container.add(background);
 
-		// Reading in images for buttons
-		File printing_records_file = new File("./images/Print_queue.png");
-		File printing_form_file = new File("./images/Print_form.png");
-		File rental_records_file = new File("./images/Rental_records.png");
-		File rental_form_file = new File("./images/Rental_form.png");
-		File time_clock_file = new File("./images/Time_clock.png");
-
-		JLabel printing_button = labelWithImage(printing_records_file, dim);
-		JLabel printing_form_button = labelWithImage(printing_form_file, dim);
-		JLabel rental_button = labelWithImage(rental_records_file, dim);
-		JLabel rental_form_button = labelWithImage(rental_form_file, dim);
-		JLabel time_clock_button = labelWithImage(time_clock_file, dim, true);
+		// Reading in images for labels (used as buttons)
+		JLabel printing_button = labelWithImage("/images/Print_queue.png", dim);
+		JLabel printing_form_button = labelWithImage("/images/Print_form.png", dim);
+		JLabel rental_button = labelWithImage("/images/Rental_records.png", dim);
+		JLabel rental_form_button = labelWithImage("/images/Rental_records.png", dim);
+		JLabel time_clock_button = labelWithImage("/images/Time_clock.png", dim, true);
 
 		// Adding buttons
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -112,7 +106,8 @@ public class Hub extends JFrame {
 		gbc.gridy = 4;
 		background.add(time_clock_button, gbc);
 		
-		
+		background.setVisible(true);
+		container.setVisible(true);
 		frame.add(container);
 		return frame;
 	}
@@ -122,11 +117,11 @@ public class Hub extends JFrame {
 	 * a JLabel. Must pass the file of the image to use and the 
 	 * dimensions required (typically screen width and height).
 	 * 
-	 * @param file - File - the image to make the button
+	 * @param file_path - String - the path to the image
 	 * @param dim - Dimension - the dimensions of the background
 	 * @return background - JLabel - background image as label
 	 *****************************************************************/
-	private JLabel createBackground(File file, Dimension dim) {
+	private JLabel createBackground(String file_path, Dimension dim) {
 
 		JLabel background = new JLabel();
 
@@ -140,7 +135,7 @@ public class Hub extends JFrame {
 			int background_width = dim.width;
 			int background_height = dim.height;
 			
-			BufferedImage img = ImageIO.read(file);
+			BufferedImage img = ImageIO.read(ResourceLoader.load(file));
 			Image full_screen_img = img.getScaledInstance(background_width, background_height, Image.SCALE_AREA_AVERAGING);
 			background.setIcon(new ImageIcon(full_screen_img));
 			background.setSize(dim);
@@ -155,11 +150,11 @@ public class Hub extends JFrame {
 	 * Helper method that generates a new JButton from an image from
 	 * a file that is passed as an argument.
 	 * 
-	 * @param file - File - the image to make the button
+	 * @param file_path - String - the path to the image
 	 * @param dim - Dimension - the requested dimensions of the image
 	 * @return lbl -JLabel - the sized label with an image
 	 *****************************************************************/
-	private JLabel labelWithImage(File file, Dimension dim) {
+	private JLabel labelWithImage(String file_path, Dimension dim) {
 		
 		JLabel lbl = new JLabel();
 		
@@ -169,7 +164,7 @@ public class Hub extends JFrame {
 			int image_width = dim.width / 4;
 			int image_height = image_width;
 			
-			BufferedImage image = ImageIO.read(file);
+			BufferedImage image = ImageIO.read(ResourceLoader.load(file));
 			Image scaled_image = image.getScaledInstance(image_width, image_height, Image.SCALE_AREA_AVERAGING);
 			lbl.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {
@@ -183,12 +178,12 @@ public class Hub extends JFrame {
 	 * Helper method that generates a new time clock JButton from an 
 	 * image from a file that is passed as an argument.
 	 * 
-	 * @param file - File - the image to make the button
+	 * @param file_path - String - the path to the image
 	 * @param dim - Dimension - the requested dimensions of the image
 	 * @param time_clock - boolean - optional, creates a time clock
 	 * @return lbl -JLabel - the sized label with an image
 	 *****************************************************************/
-	private JLabel labelWithImage(File file, Dimension dim, boolean time_clock) {
+	private JLabel labelWithImage(String file_path, Dimension dim, boolean time_clock) {
 		
 		JLabel lbl = new JLabel();
 		
@@ -200,7 +195,7 @@ public class Hub extends JFrame {
 			int image_width = (int) width;
 			int image_height = (int) height;
 			
-			BufferedImage image = ImageIO.read(file);
+			BufferedImage image = ImageIO.read(ResourceLoader.load(file));
 			Image scaled_image = image.getScaledInstance(image_width, image_height, Image.SCALE_AREA_AVERAGING);
 			lbl.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {

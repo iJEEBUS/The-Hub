@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +66,7 @@ public class Hub extends JFrame {
 		frame.setMinimumSize(dim);
 
 		// Create backdrop
-		File background_file = new File("./images/Background_dark.png");
+		File background_file = new File("./images/Background.png");
 		JLabel background = createBackground(background_file, dim);
 		container.add(background);
 
@@ -79,46 +81,48 @@ public class Hub extends JFrame {
 		JLabel printing_form_button = labelWithImage(printing_form_file, dim);
 		JLabel rental_button = labelWithImage(rental_records_file, dim);
 		JLabel rental_form_button = labelWithImage(rental_form_file, dim);
-		JLabel time_clock_button = labelWithImage(time_clock_file, dim);
-		
+		JLabel time_clock_button = labelWithImage(time_clock_file, dim, true);
 
 		// Adding buttons
 		GridBagConstraints gbc = new GridBagConstraints();
-		
+
 		// Add a blank space in the top row
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		background.add(Box.createVerticalStrut((dim.height / 12)), gbc);
-		
-		// Printing records
+		background.add(Box.createVerticalStrut((dim.height / 14)), gbc);
+
+		// Printing queue button
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		background.add(printing_button, gbc);
-		
-		// Printing form
+
+		// Printing form button
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = 3;
 		background.add(printing_form_button, gbc);
-		
+
 		// Add blank spaces between the buttons
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		int width = (int) (dim.width / 2.5);
+		int width = (int) (dim.width / 2.75);
 		background.add(Box.createHorizontalStrut(width), gbc);
 		
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		background.add(Box.createVerticalStrut((dim.height / 24)), gbc);
-		
-		// Rental button
+		// Rental records button
 		gbc.gridx = 2;
 		gbc.gridy = 2;
 		background.add(rental_button, gbc);
 
 		// Rental form button
 		gbc.gridx = 2;
-		gbc.gridy = 4;
+		gbc.gridy = 3;
 		background.add(rental_form_button, gbc);
+		
+		// Time clock button
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		background.add(time_clock_button, gbc);
+		
+		
 		frame.add(container);
 		return frame;
 	}
@@ -130,20 +134,24 @@ public class Hub extends JFrame {
 	 * 
 	 * @param file - File - the image to make the button
 	 * @param dim - Dimension - the dimensions of the background
-	 * @return
+	 * @return background - JLabel - background image as label
 	 *****************************************************************/
 	private JLabel createBackground(File file, Dimension dim) {
 
 		JLabel background = new JLabel();
-		
+
 		// Change layout so you can overlay buttons onto the JLabel
 		background.setLayout(new GridBagLayout());
 		background.setSize(dim);
-		
+
 		// Load in and set image of JLabel
 		try {
+			
+			int background_width = dim.width;
+			int background_height = dim.height;
+			
 			BufferedImage img = ImageIO.read(file);
-			Image full_screen_img = img.getScaledInstance(dim.width, dim.height, Image.SCALE_AREA_AVERAGING);
+			Image full_screen_img = img.getScaledInstance(background_width, background_height, Image.SCALE_AREA_AVERAGING);
 			background.setIcon(new ImageIcon(full_screen_img));
 			background.setSize(dim);
 		} catch (IOException e) {
@@ -152,47 +160,64 @@ public class Hub extends JFrame {
 
 		return background;
 	}
-	
+
 	/*****************************************************************
 	 * Helper method that generates a new JButton from an image from
 	 * a file that is passed as an argument.
 	 * 
 	 * @param file - File - the image to make the button
-	 * @return
+	 * @param dim - Dimension - the requested dimensions of the image
+	 * @return lbl -JLabel - the sized label with an image
 	 *****************************************************************/
 	private JLabel labelWithImage(File file, Dimension dim) {
-		JLabel btn = new JLabel();
+		
+		JLabel lbl = new JLabel();
+		
+		// Load in and set image of JLabel
 		try {
+			
+			int image_width = dim.width / 4;
+			int image_height = dim.width / 4;
+			
 			BufferedImage image = ImageIO.read(file);
-			Image scaled_image = image.getScaledInstance(dim.width / 5, dim.width / 5, Image.SCALE_AREA_AVERAGING);
-			btn.setIcon(new ImageIcon(scaled_image));
+			Image scaled_image = image.getScaledInstance(image_width, image_width, Image.SCALE_AREA_AVERAGING);
+			lbl.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {
 			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());
 		}
 
-		return btn;
+		return lbl;
 	}
 	
-	
-
 	/*****************************************************************
-	 * Helper method that generates a new JButton from an image from
-	 * a file that is passed as an argument.
+	 * Helper method that generates a new time clock JButton from an 
+	 * image from a file that is passed as an argument.
 	 * 
 	 * @param file - File - the image to make the button
-	 * @return
+	 * @param dim - Dimension - the requested dimensions of the image
+	 * @param time_clock - boolean - optional, creates a time clock
+	 * @return lbl -JLabel - the sized label with an image
 	 *****************************************************************/
-	private JButton buttonWithImage(File file, Dimension dim) {
-		JButton btn = new JButton();
+	private JLabel labelWithImage(File file, Dimension dim, boolean time_clock) {
+		
+		JLabel lbl = new JLabel();
+		
+		// Load in and set image of JLabel
 		try {
+			
+			double width = dim.width / 7;
+			double height = dim.height / 14;
+			int image_width = (int) width;
+			int image_height = (int) height;
+			
 			BufferedImage image = ImageIO.read(file);
-			Image scaled_image = image.getScaledInstance(dim.width / 5, dim.width / 5, Image.SCALE_AREA_AVERAGING);
-			btn.setIcon(new ImageIcon(scaled_image));
+			Image scaled_image = image.getScaledInstance(image_width, image_height, Image.SCALE_AREA_AVERAGING);
+			lbl.setIcon(new ImageIcon(scaled_image));
 		} catch (IOException e) {
 			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());
 		}
 
-		return btn;
+		return lbl;
 	}
 
 	/*****************************************************************

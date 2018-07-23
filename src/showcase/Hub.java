@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -62,81 +63,113 @@ public class Hub extends JFrame {
 		frame.setUndecorated(true);
 		frame.setMinimumSize(dim);
 
-		// Reading in / creating the background
-		String path = "./images/Background_v2.png"; 
-		File file = new File(path);
-		JLabel background = new JLabel();
-		background.setLayout(new GridBagLayout());
-		background.setSize(dim);
-		try {
-			BufferedImage img = ImageIO.read(file);
-			Image full_screen_img = img.getScaledInstance(screen_width, screen_height, Image.SCALE_AREA_AVERAGING);
-			background.setIcon(new ImageIcon(full_screen_img));
-			
-			background.setSize(dim);
-			container.add(background);
-		} catch (IOException e) {
-			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());
-		}
+		// Create backdrop
+		File background_file = new File("./images/Background_v2.png");
+		JLabel background = createBackground(background_file, dim);
+		container.add(background);
 
-		
 		// Reading in images for buttons
-		String printing_records = "./images/Printing_records.png";
-		String rental_records = "./images/Rental_records.png";
-		String time_clock = "./images/Time_clock.png";
-		File printing_records_file = new File(printing_records);
-		File rental_records_file = new File(rental_records);
-		File time_clock_file = new File(time_clock);
-		JButton printing_button = new JButton();
-		JButton rental_button = new JButton();
-		JButton time_clock_button = new JButton();
+		File printing_records_file = new File("./images/Printing_records.png");
+		File printing_form_file = new File("./images/Background.png");
+		File rental_records_file = new File("./images/Rental_records.png");
+		File rental_form_file = new File("./images/Rental_form.png");
+		File time_clock_file = new File("./images/Time_clock.png");
 
-		try {
-			BufferedImage printing_records_img = ImageIO.read(printing_records_file);
-			Image printing_records_img_scaled = printing_records_img.getScaledInstance(500, 500, Image.SCALE_AREA_AVERAGING);
-			printing_button.setIcon(new ImageIcon(printing_records_img_scaled));
-			
-			BufferedImage rental_records_img = ImageIO.read(rental_records_file);
-			Image rental_records_img_scaled = rental_records_img.getScaledInstance(500, 500, Image.SCALE_AREA_AVERAGING);
-			rental_button.setIcon(new ImageIcon(rental_records_img_scaled));
-			
-			BufferedImage time_clock_img = ImageIO.read(time_clock_file);
-			Image time_clock_img_scaled = time_clock_img.getScaledInstance(500, 500, Image.SCALE_AREA_AVERAGING);
-			time_clock_button.setIcon(new ImageIcon(time_clock_img_scaled));
+		JButton printing_button = buttonWithImage(printing_records_file);
+		JButton printing_form_button = buttonWithImage(printing_form_file);
+		JButton rental_button = buttonWithImage(rental_records_file);
+		JButton rental_form_button = buttonWithImage(rental_form_file);
+		JButton time_clock_button = buttonWithImage(time_clock_file);
 
-		} catch (IOException e) {
-			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());
-		}
-		
-		
 		// Adding buttons
 		GridBagConstraints gbc = new GridBagConstraints();
+		
+		// Add a blank space in the top row
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 0;
+		background.add(Box.createVerticalStrut((dim.height / 6)), gbc);
+		
+		// Printing records
+		gbc.gridx = 0;
+		gbc.gridy = 2;
 		background.add(printing_button, gbc);
 		
-		// Add a blank space between the buttons
-		gbc.gridx++;
-		gbc.gridy = 3;
-		background.add(Box.createHorizontalStrut(500), gbc);
+		// Printing form
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		background.add(printing_form_button, gbc);
 		
+		// Add blank spaces between the buttons
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		background.add(Box.createHorizontalStrut((dim.width/2)), gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		background.add(Box.createVerticalStrut((dim.height / 12)), gbc);
+		
+		// Rental button
 		gbc.gridx = 2;
-		gbc.gridy = 3;
+		gbc.gridy = 2;
 		background.add(rental_button, gbc);
-		
-		
-		// Add the time to the top right of the application
-//		DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(Locale.US).withZone(ZoneId.systemDefault());
-//		String date_time_string = formatter.format(Instant.now());
-//		JLabel time_lbl = new JLabel(date_time_string);
-//		gbc.gridx = 3;
-//		gbc.gridy = 0;
-//		background.add(time_lbl);
-//		
+
+		// Rental form button
+		gbc.gridx = 2;
+		gbc.gridy = 4;
+		background.add(rental_form_button, gbc);
 		frame.add(container);
 		return frame;
 	}
-	
+
+	/*****************************************************************
+	 * Helper method that generates the background in the form of 
+	 * a JLabel. Must pass the file of the image to use and the 
+	 * dimensions required (typically screen width and height).
+	 * 
+	 * @param file - File - the image to make the button
+	 * @param dim - Dimension - the dimensions of the background
+	 * @return
+	 *****************************************************************/
+	private JLabel createBackground(File file, Dimension dim) {
+
+		JLabel background = new JLabel();
+		
+		// Change layout so you can overlay buttons onto the JLabel
+		background.setLayout(new GridBagLayout());
+		background.setSize(dim);
+		
+		// Load in and set image of JLabel
+		try {
+			BufferedImage img = ImageIO.read(file);
+			Image full_screen_img = img.getScaledInstance(dim.width, dim.height, Image.SCALE_AREA_AVERAGING);
+			background.setIcon(new ImageIcon(full_screen_img));
+			background.setSize(dim);
+		} catch (IOException e) {
+			System.out.println("*** ERROR*** : Background image cannot be found. :: " + e.getMessage());
+		}
+
+		return background;
+	}
+
+	/*****************************************************************
+	 * Helper method that generates a new JButton from an image from
+	 * a file that is passed as an argument.
+	 * 
+	 * @param file - File - the image to make the button
+	 * @return
+	 *****************************************************************/
+	private JButton buttonWithImage(File file) {
+		JButton btn = new JButton();
+		try {
+			BufferedImage image = ImageIO.read(file);
+			Image scaled_image = image.getScaledInstance(350, 350, Image.SCALE_AREA_AVERAGING);
+			btn.setIcon(new ImageIcon(scaled_image));
+		} catch (IOException e) {
+			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());
+		}
+
+		return btn;
+	}
 
 	/*****************************************************************
 	 * Entry point for the program.

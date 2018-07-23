@@ -64,22 +64,23 @@ public class Hub extends JFrame {
 		frame.setMinimumSize(dim);
 
 		// Create backdrop
-		File background_file = new File("./images/Background_v2.png");
+		File background_file = new File("./images/Background_dark.png");
 		JLabel background = createBackground(background_file, dim);
 		container.add(background);
 
 		// Reading in images for buttons
-		File printing_records_file = new File("./images/Printing_records.png");
-		File printing_form_file = new File("./images/Background.png");
+		File printing_records_file = new File("./images/Print_queue.png");
+		File printing_form_file = new File("./images/Print_form.png");
 		File rental_records_file = new File("./images/Rental_records.png");
 		File rental_form_file = new File("./images/Rental_form.png");
 		File time_clock_file = new File("./images/Time_clock.png");
 
-		JButton printing_button = buttonWithImage(printing_records_file, dim);
-		JButton printing_form_button = buttonWithImage(printing_form_file, dim);
-		JButton rental_button = buttonWithImage(rental_records_file, dim);
-		JButton rental_form_button = buttonWithImage(rental_form_file, dim);
-		JButton time_clock_button = buttonWithImage(time_clock_file, dim);
+		JLabel printing_button = labelWithImage(printing_records_file, dim);
+		JLabel printing_form_button = labelWithImage(printing_form_file, dim);
+		JLabel rental_button = labelWithImage(rental_records_file, dim);
+		JLabel rental_form_button = labelWithImage(rental_form_file, dim);
+		JLabel time_clock_button = labelWithImage(time_clock_file, dim);
+		
 
 		// Adding buttons
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -151,6 +152,28 @@ public class Hub extends JFrame {
 
 		return background;
 	}
+	
+	/*****************************************************************
+	 * Helper method that generates a new JButton from an image from
+	 * a file that is passed as an argument.
+	 * 
+	 * @param file - File - the image to make the button
+	 * @return
+	 *****************************************************************/
+	private JLabel labelWithImage(File file, Dimension dim) {
+		JLabel btn = new JLabel();
+		try {
+			BufferedImage image = ImageIO.read(file);
+			Image scaled_image = image.getScaledInstance(dim.width / 5, dim.width / 5, Image.SCALE_AREA_AVERAGING);
+			btn.setIcon(new ImageIcon(scaled_image));
+		} catch (IOException e) {
+			System.out.println("*** ERROR*** : Background image cannot be found. Reverting to backup :: " + e.getMessage());
+		}
+
+		return btn;
+	}
+	
+	
 
 	/*****************************************************************
 	 * Helper method that generates a new JButton from an image from
